@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+    .theme-switcher{
+        @apply p-1 w-fit flex rounded-full border-solid border-gray-500 border
+    }
+
+    .theme-switcher-container{
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        @apply block relative pl-8 h-8 cursor-pointer text-2xl select-none
+    }
+
+    .theme-switcher-container input{
+        @apply absolute opacity-0 cursor-pointer h-0 w-0
+    }
+
+    .theme-switcher_switch {
+        @apply absolute top-0 left-0 h-8 w-8 flex
+        items-center justify-center rounded-[inherit] cursor-pointer bg-none
+    }
+
+    .theme-switcher_switch:hover > .icon {
+        @apply stroke-gray-800 dark:stroke-gray-300
+    }
+
+    .theme-switcher_switch:active, .theme-switcher-container input:checked ~ .theme-switcher_switch {
+        @apply rounded-full dark:bg-gray-800 bg-gray-400
+    }
+
+    .theme-switcher_switch:active > .icon {
+        @apply stroke-white
+    }
+
+    .theme-switcher-container input:checked ~ .theme-switcher_switch:after {
+        @apply block
+    }
+
+    .theme-switcher_switch:after {
+        @apply absolute hidden content-none
+    }
+
+    .theme-switcher-container input:checked ~ .theme-switcher_switch:after {
+        @apply block
+    }
+
+}

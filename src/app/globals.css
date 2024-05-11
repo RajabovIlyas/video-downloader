@@ -2,32 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+@layer base {
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+  body {
+    @apply dark:bg-gray-950;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@layer components {
+  .header-link {
+    @apply text-gray-600 hover:text-gray-900 dark:text-zinc-400 dark:hover:text-zinc-600;
   }
+
+  .header-link-icon {
+    @apply header-link flex items-center justify-center gap-1 py-2;
+  }
+
+
+
+  .main-title {
+    font-size: clamp(1rem, 17vw, 3rem);
+    @apply text-center font-medium uppercase leading-none dark:text-zinc-200;
+  }
+
+  .main-input {
+    @apply flex items-center justify-center gap-1 rounded border-2 border-black bg-white px-5 py-2.5 text-center text-black ring-gray-200 ring-offset-2 transition hover:bg-gray-100 focus-visible:ring-2  dark:border-zinc-200 dark:bg-gray-950 dark:text-zinc-200 dark:hover:bg-gray-900;
+  }
+
+
+/*  #######################################################################################################*/
+
+
 }
