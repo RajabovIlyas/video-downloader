@@ -1,22 +1,22 @@
+'use client'
+
 import './themeSwitch.css'
 import {useTheme} from "next-themes";
 import {SiteTheme} from "@/enums/site-theme.enum";
+import {useUrlForm} from "@/components/UrlForm/url-form.hook";
+import {useThemeSwitchForm} from "@/components/ThemeSwitch/theme-switch.form";
 
 function ThemeSwitch() {
+    const {register} =
+        useThemeSwitchForm();
 
-    const { theme, setTheme} = useTheme();
 
-    const changeTheme = (newTheme: SiteTheme) => () => {
-        if (theme === newTheme) {
-            return
-        }
-        setTheme(newTheme);
-    };
 
     return (
-        <div role="radiogroup" className="theme-switcher">
+        <div role="radiogroup" className="theme-switcher" >
             <label className='theme-switcher-container'>
                 <input
+                    {...register('theme')}
                     type="radio"
                     name="theme"
                     value={SiteTheme.LIGHT}
@@ -24,9 +24,6 @@ function ThemeSwitch() {
                     data-active="false"
                     aria-label="Switch to light theme"
                     aria-checked="false"
-
-                    checked={SiteTheme.LIGHT === theme}
-                    onClick={changeTheme(SiteTheme.LIGHT)}
                 />
                 <span className="theme-switcher_switch">
             <svg
@@ -57,6 +54,7 @@ function ThemeSwitch() {
             </label>
             <label className='theme-switcher-container'>
                 <input
+                    {...register('theme')}
                     type="radio"
                     name="theme"
                     value={SiteTheme.SYSTEM}
@@ -65,8 +63,6 @@ function ThemeSwitch() {
                     aria-label="Switch to system theme"
                     aria-checked="false"
 
-                    checked={SiteTheme.SYSTEM === theme}
-                    onClick={changeTheme(SiteTheme.SYSTEM)}
                 />
                 <span className="theme-switcher_switch">
             <svg
@@ -91,6 +87,7 @@ function ThemeSwitch() {
             </label>
             <label className='theme-switcher-container'>
                 <input
+                    {...register('theme')}
                     type="radio"
                     name="theme"
                     value={SiteTheme.DARK}
@@ -98,8 +95,6 @@ function ThemeSwitch() {
                     data-active="true"
                     aria-label="Switch to dark theme"
                     aria-checked="true"
-                    checked={SiteTheme.DARK === theme}
-                    onClick={changeTheme(SiteTheme.DARK)}
                 />
                 <span className="theme-switcher_switch">
             <svg

@@ -1,13 +1,11 @@
 'use client';
 
-import { FC } from 'react';
-
 interface NoticeProps {
     title: string | number;
     description: string | number;
 }
 
-const Notice: FC<NoticeProps> = ({ title, description }) => {
+function Notice ({ title, description }: NoticeProps)  {
     return (
         <div className='flex min-h-[calc(100vh-15rem)] items-center justify-center'>
             <div className='text-center'>
