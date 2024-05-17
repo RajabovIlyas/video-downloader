@@ -1,65 +1,69 @@
-'use client';
+"use client";
 
-import {createContext, useCallback, useState} from 'react';
-import {UrlFormModel} from "@/models/url-form.model";
-import {downloadVideo, getVideoInfoByUrl} from "@/services/download-video.service";
-import {VideoFormatForView} from "@/models/video-format.model";
+import { createContext, useState } from "react";
+import { UrlFormModel } from "@/models/url-form.model";
+import { getVideoInfoByUrl } from "@/services/download-video.service";
+import { VideoInfoModel } from "@/models/video-info.model";
+import { getVParamFromUrlYoutube } from "@/helpers/getVParamFromUrlYoutube";
+import { ErrorReqModel } from "@/models/error-req.model";
 
-
-type FormatType = VideoFormatForView[] | null | { error: 'Bad request!' }
+type FormatType = VideoInfoModel | null | ErrorReqModel;
 
 export interface StateContextParams {
-    setFormatsByUrl: (parse: UrlFormModel) => void;
-    formats: FormatType;
-    loading: boolean
-    downloadVideoByFormat: (quality: string, url: string) => void
-    videoUrl: string
+  setFormatsByUrl: (parse: UrlFormModel) => void;
+  videoInfo: FormatType;
+  infoLoading: boolean;
+  videoKey: string;
+  downloadLoading: boolean;
 }
 
 const defaultState: StateContextParams = {
-    videoUrl: '',
-    formats: null,
-    setFormatsByUrl: () => {
-    },
-    loading: false,
-    downloadVideoByFormat: () => {
-    }
+  videoKey: "",
+  videoInfo: null,
+  setFormatsByUrl: () => {},
+  infoLoading: false,
+  downloadLoading: false,
 };
 
 export const UrlContext = createContext<StateContextParams>(defaultState);
 
 export default function UrlContextComponent({
-                                                children,
-                                            }: Readonly<{
-    children: React.ReactNode;
+  children,
+}: Readonly<{
+  children: React.ReactNode;
 }>) {
-    const [formats, setFormats] = useState<FormatType>(null);
-    const [videoUrl, setVideoUrl] = useState('');
-    const [loading, setLoading] = useState(false);
+  const [videoInfo, setVideoInfo] = useState<FormatType>(null);
+  const [videoKey, setVideoKey] = useState("");
+  const [infoLoading, setInfoLoading] = useState(false);
+  const [downloadLoading, setDownloadLoading] = useState(false);
 
-
-    const setFormatsByUrl = async ({url}: UrlFormModel) => {
-        try {
-            setVideoUrl(url);
-            setLoading(true)
-            const formats = await getVideoInfoByUrl(url)
-            setFormats(formats);
-        } catch (e) {
-            setFormats({error: 'Bad request!'})
-        } finally {
-            setLoading(false)
-        }
-    };
-
-    const downloadVideoByFormat =  (quality: string, url: string) => {
-        console.log(`quality: ${quality}, url: ${url}`)
-        downloadVideo(quality, url)
+  const setFormatsByUrl = async ({ url }: UrlFormModel) => {
+    try {
+      const newVideoKey = getVParamFromUrlYoutube(url);
+      if (newVideoKey) {
+        setVideoKey(newVideoKey);
+      }
+      setInfoLoading(true);
+      const videoInfo = await getVideoInfoByUrl(url);
+      setVideoInfo(videoInfo);
+    } catch (e) {
+      setVideoInfo({ error: "Bad request!" });
+    } finally {
+      setInfoLoading(false);
     }
+  };
 
-
-    return (
-        <UrlContext.Provider value={{formats, setFormatsByUrl, loading, downloadVideoByFormat, videoUrl}}>
-            {children}
-        </UrlContext.Provider>
-    );
+  return (
+    <UrlContext.Provider
+      value={{
+        videoInfo,
+        setFormatsByUrl,
+        infoLoading,
+        videoKey,
+        downloadLoading,
+      }}
+    >
+      {children}
+    </UrlContext.Provider>
+  );
 }

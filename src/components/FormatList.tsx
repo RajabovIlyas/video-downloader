@@ -1,50 +1,105 @@
-'use client'
-import {useCallback, useContext} from "react";
-import {UrlContext} from "@/contexts/url.context";
+"use client";
+import { useContext } from "react";
+import { UrlContext } from "@/contexts/url.context";
 import DownloadIcon from "@/components/icons/DownloadIcon";
-import {VideoFormatForView} from "@/models/video-format.model";
+import { VideoFormat, VideoInfoModel } from "@/models/video-info.model";
+import { ErrorReqModel } from "@/models/error-req.model";
 
-
-interface FormatItemProps extends Omit<VideoFormatForView, 'url'> {
-    onDownloadVideo: (quality: string) => void
+interface FormatItemProps extends Omit<VideoFormat, "url"> {
+  videoKey: string;
+  title: string;
 }
 
-function FormatItem({quality, itag, qualityLabel, onDownloadVideo}: FormatItemProps) {
+const getUrlDownload = (videoKey: string, itag: number) =>
+  `/api/videos?id=${videoKey}&quality=${itag}`;
 
-    const onClickDownloadButton = () => {
-        onDownloadVideo(itag.toString());
-    }
-
-    return (
-        <tr>
-            <td className="mt-5">{quality}</td>
-            <td className="mt-5">{qualityLabel}</td>
-            <td className="mt-5">
-                <button className="main-button flex items-center gap-1" onClick={onClickDownloadButton}>
-                    <DownloadIcon/> Download
-                </button>
-            </td>
-        </tr>
-    )
+function FormatItem({
+  itag,
+  qualityLabel,
+  videoKey,
+  title,
+  fps,
+}: FormatItemProps) {
+  return (
+    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
+      <td className="py-4 px-6 text-sm font-medium text-gray-900 text-nowrap max-w-32 sm:block md:max-w-72 dark:text-white truncate  hidden">
+        {title}
+      </td>
+      <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
+        {qualityLabel}
+      </td>
+      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
+        {fps}
+      </td>
+      <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
+        <a
+          href={getUrlDownload(videoKey, itag)}
+          className="text-blue-600 dark:text-blue-500 hover:underline flex gap-1"
+        >
+          <DownloadIcon className="fill-blue-600 dark:fill-blue-500" />
+          download
+        </a>
+      </td>
+    </tr>
+  );
 }
 
 function FormatList() {
-    const {formats, downloadVideoByFormat, videoUrl} = useContext(UrlContext);
+  const { videoInfo, videoKey } = useContext(UrlContext);
 
-    const onDownloadVideo = useCallback((quality: string) => {
-        downloadVideoByFormat(quality, videoUrl)
-    }, [videoUrl]);
+  if (!videoInfo || (videoInfo as ErrorReqModel).error) {
+    return null;
+  }
 
-    return (
-        <div className="flex justify-center">
-            <table className="w-full px-5 ">
-                <tbody>
-                {(Array.isArray(formats) && formats.map(({url, ...format}) => <FormatItem
-                    key={url} {...{onDownloadVideo, ...format}} />))}
+  const { formats, title } = videoInfo as VideoInfoModel;
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="flex flex-col">
+        <div className="overflow-x-auto shadow-md rounded-lg">
+          <div className="inline-block min-w-full align-middle">
+            <div className="overflow-hidden ">
+              <table className="min-w-full divide-y divide-gray-200 table-fixed dark:divide-gray-700">
+                <thead className="bg-gray-100 dark:bg-gray-700">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:block hidden"
+                    >
+                      Title
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                    >
+                      quality
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                    >
+                      fps
+                    </th>
+                    <th scope="col" className="p-4">
+                      <span className="sr-only">Edit</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                  {formats.map((format) => (
+                    <FormatItem
+                      key={format.itag}
+                      {...{ ...format, title, videoKey }}
+                    />
+                  ))}
                 </tbody>
-            </table>
+              </table>
+            </div>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  );
 }
 
 export default FormatList;

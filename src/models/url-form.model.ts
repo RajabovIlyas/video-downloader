@@ -1,3 +1,3 @@
-export interface UrlFormModel{
-    url: string;
+export interface UrlFormModel {
+  url: string;
 }
