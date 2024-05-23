@@ -1,63 +1,31 @@
 "use client";
-import { useContext } from "react";
-import { UrlContext } from "@/contexts/url.context";
 import DownloadIcon from "@/components/icons/DownloadIcon";
-import { VideoFormat, VideoInfoModel } from "@/models/video-info.model";
-import { ErrorReqModel } from "@/models/error-req.model";
-import FormatListLoader from "@/components/FormatList/FormatListLoader";
 
-interface FormatItemProps extends Omit<VideoFormat, "url"> {
-  videoKey: string;
-  title: string;
-}
+const LOADER_ITEMS = [0, 1, 2, 3, 4, 5, 6];
 
-const getUrlDownload = (videoKey: string, itag: number) =>
-  `/api/videos?id=${videoKey}&quality=${itag}`;
-
-function FormatItem({
-  itag,
-  qualityLabel,
-  videoKey,
-  title,
-  fps,
-}: FormatItemProps) {
+function FormatItem() {
   return (
-    <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
+    <tr>
       <td className="py-4 px-6 text-sm font-medium text-gray-900 text-nowrap max-w-32 sm:block md:max-w-72 dark:text-white truncate  hidden">
-        {title}
+        <div className="animate-pulse h-5 w-32 md:w-64 bg-slate-200 dark:bg-slate-700 rounded" />
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
-        {qualityLabel}
+        <div className="animate-pulse h-5 w-24  bg-slate-200 dark:bg-slate-700 rounded" />
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
-        {fps}
+        <div className="animate-pulse h-5 w-10 bg-slate-200 dark:bg-slate-700 rounded" />
       </td>
       <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
-        <a
-          href={getUrlDownload(videoKey, itag)}
-          className="text-blue-600 dark:text-blue-500 hover:underline flex gap-1"
-        >
+        <p className="text-blue-600 dark:text-blue-500 flex gap-1 cursor-pointer">
           <DownloadIcon className="fill-blue-600 dark:fill-blue-500" />
           download
-        </a>
+        </p>
       </td>
     </tr>
   );
 }
 
-function FormatList() {
-  const { videoInfo, videoKey, infoLoading } = useContext(UrlContext);
-
-  if (infoLoading) {
-    return <FormatListLoader />;
-  }
-
-  if (!videoInfo || (videoInfo as ErrorReqModel).error) {
-    return null;
-  }
-
-  const { formats, title } = videoInfo as VideoInfoModel;
-
+function FormatListLoader() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex flex-col">
@@ -90,12 +58,9 @@ function FormatList() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700 ">
-                  {formats.map((format) => (
-                    <FormatItem
-                      key={format.itag}
-                      {...{ ...format, title, videoKey }}
-                    />
+                <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                  {LOADER_ITEMS.map((key) => (
+                    <FormatItem key={key} />
                   ))}
                 </tbody>
               </table>
@@ -107,4 +72,4 @@ function FormatList() {
   );
 }
 
-export default FormatList;
+export default FormatListLoader;
