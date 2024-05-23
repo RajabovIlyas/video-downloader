@@ -10,6 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Raj Downloader",
   description: "Raj Downloader",
+  icons: "favicon.svg",
 };
 
 export default function RootLayout({
