@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import LogoIcon from "@/components/icons/LogoIcon";
-import ThemeSwitch from "@/components/ThemeSwitch/ThemeSwitch";
+import ThemeSwitch from "@/components/ThemeSwitch";
 
 function Header() {
   return (

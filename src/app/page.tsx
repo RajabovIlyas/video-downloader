@@ -1,6 +1,6 @@
-import UrlForm from "@/components/UrlForm/UrlForm";
-import FormatList from "@/components/FormatList";
+import UrlForm from "@/components/UrlForm";
 import UrlContextComponent from "@/contexts/url.context";
+import FormatList from "@/components/FormatList";
 
 export default function Home() {
   return (

@@ -1,5 +1,5 @@
 "use client";
-import { useUrlForm } from "@/components/UrlForm/url-form.hook";
+import { useUrlForm } from "./url-form.hook";
 import Loader from "@/components/Loader";
 
 function UrlForm() {

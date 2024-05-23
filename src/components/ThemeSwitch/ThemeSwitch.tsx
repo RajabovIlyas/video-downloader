@@ -2,7 +2,7 @@
 
 import "./themeSwitch.css";
 import { SiteTheme } from "@/enums/site-theme.enum";
-import { useThemeSwitchForm } from "@/components/ThemeSwitch/theme-switch.form";
+import { useThemeSwitchForm } from "./theme-switch.form";
 
 function ThemeSwitch() {
   const { register } = useThemeSwitchForm();
