@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { chooseFormat, downloadFromInfo, getInfo } from "ytdl-core";
+import ytdl, { chooseFormat, downloadFromInfo, getInfo } from "ytdl-core";
 
 interface NextApiResponse extends NextResponse {
   params: { videoName: string };
@@ -31,7 +31,9 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
   );
 
-  const data = downloadFromInfo(info, { format });
+  const data = downloadFromInfo(info, { format, highWaterMark: 512 * 1024 });
+
+  const fileName = `${info.videoDetails.title}(${format.qualityLabel}).${format.container}`;
 
   return new Response(data as never, {
     headers: responseHeaders,

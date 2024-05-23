@@ -35,19 +35,3 @@ export const getVideoInfoByUrl = async (
     ),
   };
 };
-
-export const downloadVideo = async (quality: string, url: string) => {
-  if (!fs.existsSync(VIDEO_FOLDER)) {
-    fs.mkdirSync(VIDEO_FOLDER);
-  }
-  const info = await getInfo(url);
-  const format = chooseFormat(info.formats, { quality });
-  const fileName = `${info.videoDetails.title}(${format.qualityLabel}).${format.container}`;
-  const outputFilePath = `videos/${fileName}`;
-  const outputStream = fs.createWriteStream(outputFilePath);
-  ytdl.downloadFromInfo(info, { format: format }).pipe(outputStream);
-  outputStream.on("finish", () => {
-    console.log(`Finished downloading: ${outputFilePath}`);
-  });
-  return { fileName };
-};
