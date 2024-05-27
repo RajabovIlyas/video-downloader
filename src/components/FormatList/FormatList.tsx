@@ -11,8 +11,12 @@ interface FormatItemProps extends Omit<VideoFormat, "url"> {
   title: string;
 }
 
-const getUrlDownload = (videoKey: string, itag: number) =>
-  `/api/videos?id=${videoKey}&quality=${itag}`;
+const getUrlDownload = (videoKey: string, itag: number) => {
+  if (!videoKey || !itag) {
+    return "";
+  }
+  return `/api/videos?id=${videoKey}&quality=${itag}`;
+};
 
 function FormatItem({
   itag,

@@ -5,9 +5,26 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext } from "react";
 import { UrlFormModel } from "@/models/url-form.model";
 import { UrlContext } from "@/contexts/url.context";
+import { getVParamFromUrlYoutube } from "@/helpers/getVParamFromUrlYoutube";
 
 const schema: yup.ObjectSchema<UrlFormModel> = yup.object().shape({
-  url: yup.string().required().min(4).max(500).url().label("Url"),
+  url: yup
+    .string()
+    .required()
+    .min(4)
+    .max(500)
+    .url()
+    .label("Url")
+    .test({
+      message: "There is no video at this url",
+      test: (value) => {
+        try {
+          return typeof getVParamFromUrlYoutube(value) === "string";
+        } catch (e) {
+          return false;
+        }
+      },
+    }),
 });
 
 export const useUrlForm = () => {
