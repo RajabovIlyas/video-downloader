@@ -4,6 +4,7 @@ import {
   downloadFromInfo,
   getInfo,
   videoFormat,
+  videoInfo,
 } from "ytdl-core";
 import { checkPrams } from "@/app/api/videos/query.schema";
 import { ZodError } from "zod";
@@ -12,8 +13,12 @@ interface NextApiResponse extends NextResponse {
   params: { videoName: string };
 }
 
-const getHeader = ({ headers }: Response, format: videoFormat) => {
-  const randomName = Math.random().toString(36).substring(2, 15);
+const getHeader = (
+  { headers }: Response,
+  format: videoFormat,
+  info: videoInfo,
+) => {
+  const fileName = `${info.videoDetails.title}(${format.qualityLabel}).${format.container}`;
 
   const responseHeaders = new Headers(headers);
 
@@ -21,7 +26,7 @@ const getHeader = ({ headers }: Response, format: videoFormat) => {
 
   responseHeaders.set(
     "Content-Disposition",
-    `attachment; filename="${randomName}.${format.container}"`,
+    `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
   );
 
   responseHeaders.set(
@@ -41,7 +46,7 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const data = downloadFromInfo(info, { format });
 
     return new Response(data as never, {
-      headers: getHeader(response, format),
+      headers: getHeader(response, format, info),
     });
   } catch (error) {
     if (error instanceof ZodError) {
