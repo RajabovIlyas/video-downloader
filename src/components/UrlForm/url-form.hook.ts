@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext } from "react";
 import { UrlFormModel } from "@/models/url-form.model";
 import { UrlContext } from "@/contexts/url.context";
-import { getVParamFromUrlYoutube } from "@/helpers/getVParamFromUrlYoutube";
+import { getParamFromUrlYt } from "@/helpers/param-from-url-yt.helper";
 
 const schema: yup.ObjectSchema<UrlFormModel> = yup.object().shape({
   url: yup
@@ -19,7 +19,7 @@ const schema: yup.ObjectSchema<UrlFormModel> = yup.object().shape({
       message: "There is no video at this url",
       test: (value) => {
         try {
-          return typeof getVParamFromUrlYoutube(value) === "string";
+          return typeof getParamFromUrlYt(value) === "string";
         } catch (e) {
           return false;
         }

@@ -11,6 +11,7 @@ import { objectDivision } from "@/helpers/object-division.helper";
 import { VideoInfoModel } from "@/models/video-info.model";
 import * as fs from "fs";
 import { VIDEO_FOLDER } from "@/constants/video.constant";
+import { getBiteToMegaBite } from "@/helpers/bite-to-megabite.helper";
 
 const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
   "quality",
@@ -23,14 +24,21 @@ const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
 export const getVideoInfoByUrl = async (
   url: string,
 ): Promise<VideoInfoModel> => {
-  const { formats, videoDetails, ...otherData } = await getBasicInfo(url);
+  const { formats, videoDetails, ...otherData } = await getInfo(url);
+
+  console.log("formats", formats);
   return {
     title: videoDetails.title,
-    pictures: videoDetails.thumbnails,
     formats: Object.values(
       formats
-        .filter(({ mimeType }) => mimeType && mimeType.search(/video.+/) >= 0)
-        .map((format) => objectDivision(format, FORMAT_PROPERTIES))
+        .filter(
+          ({ mimeType, url }) =>
+            url && mimeType && mimeType.search(/video.+/) >= 0,
+        )
+        .map((format) => ({
+          ...objectDivision(format, FORMAT_PROPERTIES),
+          contentLength: `${getBiteToMegaBite(format.contentLength)} mb`,
+        }))
         .reduce((acc, obj) => ({ ...acc, [obj.itag]: obj }), {}),
     ),
   };

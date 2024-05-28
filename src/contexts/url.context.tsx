@@ -2,10 +2,14 @@
 
 import { createContext, useState } from "react";
 import { UrlFormModel } from "@/models/url-form.model";
-import { getVideoInfoByUrl } from "@/services/download-video.service";
 import { VideoInfoModel } from "@/models/video-info.model";
-import { getVParamFromUrlYoutube } from "@/helpers/getVParamFromUrlYoutube";
+import { getParamFromUrlYt } from "@/helpers/param-from-url-yt.helper";
 import { ErrorReqModel } from "@/models/error-req.model";
+import { getVideoInfoByUrl } from "@/services/download-video.service";
+import {
+  retrieveChallenge,
+  solveChallenge,
+} from "@/services/check-download-video";
 
 type FormatType = VideoInfoModel | null | ErrorReqModel;
 
@@ -39,12 +43,13 @@ export default function UrlContextComponent({
 
   const setFormatsByUrl = async ({ url }: UrlFormModel) => {
     try {
-      const newVideoKey = getVParamFromUrlYoutube(url);
-      if (newVideoKey) {
-        setVideoKey(newVideoKey);
+      const newVideoKey = getParamFromUrlYt(url);
+      if (!newVideoKey) {
+        throw Error("Bad url!");
       }
       setInfoLoading(true);
-      const videoInfo = await getVideoInfoByUrl(url);
+      setVideoKey(newVideoKey);
+      const videoInfo = await getVideoInfoByUrl(newVideoKey);
       setVideoInfo(videoInfo);
     } catch (e) {
       setVideoInfo({ error: "Bad request!" });
