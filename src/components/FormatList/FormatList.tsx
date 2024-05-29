@@ -24,17 +24,21 @@ function FormatItem({
   videoKey,
   title,
   fps,
+  contentLength,
 }: FormatItemProps) {
   return (
     <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
-      <td className="py-4 px-6 text-sm font-medium text-gray-900 text-nowrap max-w-32 sm:block md:max-w-72 dark:text-white truncate  hidden">
+      <td className="py-4 px-6 text-sm font-medium text-gray-900 text-nowrap md:block max-w-72 dark:text-white truncate  hidden">
         {title}
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
         {qualityLabel}
       </td>
-      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
+      <td className="hidden sm:block py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
         {fps}
+      </td>
+      <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
+        {contentLength}
       </td>
       <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
         <a
@@ -73,7 +77,7 @@ function FormatList() {
                   <tr>
                     <th
                       scope="col"
-                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 sm:block hidden"
+                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 md:block hidden"
                     >
                       Title
                     </th>
@@ -85,9 +89,15 @@ function FormatList() {
                     </th>
                     <th
                       scope="col"
-                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                      className="hidden sm:block py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
                     >
                       fps
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                    >
+                      size
                     </th>
                     <th scope="col" className="p-4">
                       <span className="sr-only">Edit</span>

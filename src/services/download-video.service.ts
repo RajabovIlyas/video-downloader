@@ -1,53 +1,49 @@
 "use server";
-import ytdl, {
-  chooseFormat,
-  downloadFromInfo,
-  filterFormats,
-  getBasicInfo,
-  getInfo,
-  videoFormat,
-} from "ytdl-core";
 import { objectDivision } from "@/helpers/object-division.helper";
-import { VideoInfoModel } from "@/models/video-info.model";
-import * as fs from "fs";
-import { VIDEO_FOLDER } from "@/constants/video.constant";
+import { VideoFormat, VideoInfoModel } from "@/models/video-info.model";
+import { getBiteToMegaBite } from "@/helpers/bite-to-megabite.helper";
+import { ResponseVideoFormat } from "@/models/response-video-info";
+import axios from "axios";
 
-const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
+const FORMAT_PROPERTIES: Array<keyof ResponseVideoFormat> = [
   "quality",
   "qualityLabel",
-  "url",
   "itag",
   "fps",
 ];
 
-export const getVideoInfoByUrl = async (
-  url: string,
-): Promise<VideoInfoModel> => {
-  const { formats, videoDetails, ...otherData } = await getBasicInfo(url);
-  return {
-    title: videoDetails.title,
-    pictures: videoDetails.thumbnails,
-    formats: Object.values(
-      formats
-        .filter(({ mimeType }) => mimeType && mimeType.search(/video.+/) >= 0)
-        .map((format) => objectDivision(format, FORMAT_PROPERTIES))
-        .reduce((acc, obj) => ({ ...acc, [obj.itag]: obj }), {}),
-    ),
-  };
-};
-
-export const downloadVideo = async (quality: string, url: string) => {
-  if (!fs.existsSync(VIDEO_FOLDER)) {
-    fs.mkdirSync(VIDEO_FOLDER);
-  }
-  const info = await getInfo(url);
-  const format = chooseFormat(info.formats, { quality });
-  const fileName = `${info.videoDetails.title}(${format.qualityLabel}).${format.container}`;
-  const outputFilePath = `videos/${fileName}`;
-  const outputStream = fs.createWriteStream(outputFilePath);
-  ytdl.downloadFromInfo(info, { format: format }).pipe(outputStream);
-  outputStream.on("finish", () => {
-    console.log(`Finished downloading: ${outputFilePath}`);
+const getVideoInfo = async (videoId: string) =>
+  axios.post("https://www.youtube.com/youtubei/v1/player", {
+    videoId: videoId,
+    context: {
+      client: { clientName: "WEB", clientVersion: "2.20230810.05.00" },
+    },
   });
-  return { fileName };
+
+export const videoInfoById = async (
+  videoId: string,
+): Promise<VideoInfoModel> => {
+  const response = await getVideoInfo(videoId);
+
+  const formats: ResponseVideoFormat[] =
+    response.data.streamingData.adaptiveFormats;
+  const title: string = response.data.videoDetails.title;
+
+  const videoFormat: VideoFormat[] = Object.values(
+    formats
+      .filter(
+        ({ url, signatureCipher, mimeType }) =>
+          mimeType && mimeType.search(/video.+/) >= 0,
+      )
+      .map((format) => ({
+        ...objectDivision(format, FORMAT_PROPERTIES),
+        contentLength: `${getBiteToMegaBite(format.contentLength)} mb`,
+      }))
+      .reduce((acc, obj) => ({ ...acc, [obj.itag]: obj }), {}),
+  );
+
+  return {
+    formats: videoFormat,
+    title,
+  };
 };
