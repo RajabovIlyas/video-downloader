@@ -1,12 +1,11 @@
-import { videoFormat, thumbnail } from "ytdl-core";
+import { ResponseVideoFormat } from "@/models/response-video-info";
 
 export type VideoFormat = Pick<
-  videoFormat,
-  "quality" | "qualityLabel" | "url" | "itag" | "fps"
+  ResponseVideoFormat,
+  "quality" | "qualityLabel" | "itag" | "fps" | "contentLength" | "url"
 >;
 
 export type VideoInfoModel = {
   formats: VideoFormat[];
   title: string;
-  pictures: thumbnail[];
 };

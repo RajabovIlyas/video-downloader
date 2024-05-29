@@ -12,6 +12,9 @@ function FormatItem() {
       <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
         <div className="animate-pulse h-5 w-24  bg-slate-200 dark:bg-slate-700 rounded" />
       </td>
+      <td className="hidden sm:block py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
+        <div className="animate-pulse h-5 w-10 bg-slate-200 dark:bg-slate-700 rounded" />
+      </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
         <div className="animate-pulse h-5 w-10 bg-slate-200 dark:bg-slate-700 rounded" />
       </td>
@@ -49,9 +52,15 @@ function FormatListLoader() {
                     </th>
                     <th
                       scope="col"
-                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                      className="hidden sm:block py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
                     >
                       fps
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
+                    >
+                      size
                     </th>
                     <th scope="col" className="p-4">
                       <span className="sr-only">Edit</span>
