@@ -25,19 +25,23 @@ export const videoInfoById = async (
 ): Promise<VideoInfoModel> => {
   const response = await getVideoInfo(videoId);
 
-  const formats: ResponseVideoFormat[] =
-    response.data.streamingData.adaptiveFormats;
+  const formats: ResponseVideoFormat[] = [
+    ...response.data.streamingData.formats,
+    ...response.data.streamingData.adaptiveFormats,
+  ];
   const title: string = response.data.videoDetails.title;
 
   const videoFormat: VideoFormat[] = Object.values(
-    formats
+    [...formats]
       .filter(
         ({ url, signatureCipher, mimeType }) =>
           mimeType && mimeType.search(/video.+/) >= 0,
       )
       .map((format) => ({
         ...objectDivision(format, FORMAT_PROPERTIES),
-        contentLength: `${getBiteToMegaBite(format.contentLength)} mb`,
+        contentLength: format.contentLength
+          ? `${getBiteToMegaBite(format.contentLength)} mb`
+          : "unknown size",
       }))
       .reduce((acc, obj) => ({ ...acc, [obj.itag]: obj }), {}),
   );
