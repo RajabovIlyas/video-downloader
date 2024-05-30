@@ -24,6 +24,10 @@ const getHeader = (
 
   responseHeaders.set("Content-Type", "video/mp4");
 
+  if (format.contentLength) {
+    responseHeaders.set("Content-Length", format.contentLength);
+  }
+
   responseHeaders.set(
     "Content-Disposition",
     `attachment; filename*=UTF-8''${encodeURIComponent(fileName)}`,
