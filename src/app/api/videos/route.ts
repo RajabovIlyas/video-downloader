@@ -47,7 +47,7 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const info = await getInfo(id);
     const format = chooseFormat(info.formats, { quality });
 
-    const data = downloadFromInfo(info, { format });
+    const data = downloadFromInfo(info, { format, highWaterMark: 1024 * 1024 });
 
     return new Response(data as never, {
       headers: getHeader(response, format, info),

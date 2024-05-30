@@ -1,7 +1,7 @@
-import { ResponseVideoFormat } from "@/models/response-video-info";
+import { videoFormat } from "ytdl-core";
 
 export type VideoFormat = Pick<
-  ResponseVideoFormat,
+  videoFormat,
   "quality" | "qualityLabel" | "itag" | "fps" | "contentLength" | "url"
 >;
 
