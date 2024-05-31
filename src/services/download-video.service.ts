@@ -10,6 +10,7 @@ const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
   "itag",
   "fps",
   "url",
+  "container",
 ];
 
 export const videoInfoById = async (
@@ -18,8 +19,7 @@ export const videoInfoById = async (
   const { formats, videoDetails } = await getInfo(videoId);
 
   const videoFormat: VideoFormat[] = Object.values(
-    [...formats]
-      .filter(({ mimeType }) => mimeType && mimeType.search(/video.+/) >= 0)
+    formats
       .map((format) => ({
         ...objectDivision(format, FORMAT_PROPERTIES),
         contentLength: format.contentLength

@@ -22,7 +22,7 @@ const getHeader = (
 
   const responseHeaders = new Headers(headers);
 
-  responseHeaders.set("Content-Type", "video/mp4");
+  responseHeaders.set("Content-Type", format.mimeType || "video/mp4");
 
   if (format.contentLength) {
     responseHeaders.set("Content-Length", format.contentLength);
