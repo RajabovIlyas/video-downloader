@@ -26,6 +26,10 @@
     @apply h-12 md:w-80 w-52 rounded border-2 border-black bg-white px-5 py-2.5 text-black ring-gray-200 ring-offset-2 transition hover:bg-gray-100 focus-visible:ring-2  dark:border-zinc-200 dark:bg-gray-950 dark:text-zinc-200 dark:hover:bg-gray-900;
   }
 
+  [type="search"]::-webkit-search-cancel-button {
+    @apply relative -right-2.5
+  }
+
   .form-wrong {
     @apply dark:text-red-700 mt-1 text-sm text-red-600 h-5;
   }
