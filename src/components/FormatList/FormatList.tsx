@@ -25,6 +25,7 @@ function FormatItem({
   title,
   fps,
   contentLength,
+  container,
 }: FormatItemProps) {
   return (
     <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -32,7 +33,7 @@ function FormatItem({
         {title}
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
-        {qualityLabel}
+        {qualityLabel} {container}
       </td>
       <td className="hidden sm:block py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
         {fps}
