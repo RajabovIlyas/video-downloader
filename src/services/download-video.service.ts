@@ -3,6 +3,8 @@ import { objectDivision } from "@/helpers/object-division.helper";
 import { VideoFormat, VideoInfoModel } from "@/models/video-info.model";
 import { getBiteToMegaBite } from "@/helpers/bite-to-megabite.helper";
 import { getInfo, videoFormat } from "ytdl-core";
+import axios from "axios";
+import { getContentLength } from "@/helpers/content-length.helper";
 
 const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
   "quality",
@@ -12,6 +14,14 @@ const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
   "url",
   "container",
 ];
+
+const getSizeFile = async (url: string) => {
+  const contentLength = await getContentLength(url);
+  if (!contentLength) {
+    return "unknown size";
+  }
+  return `${getBiteToMegaBite(contentLength)} mb`;
+};
 
 export const videoInfoById = async (
   videoId: string,
@@ -24,7 +34,7 @@ export const videoInfoById = async (
         ...objectDivision(format, FORMAT_PROPERTIES),
         contentLength: format.contentLength
           ? `${getBiteToMegaBite(format.contentLength)} mb`
-          : "unknown size",
+          : getSizeFile(format.url),
       }))
       .reduce((acc, obj) => ({ ...acc, [obj.itag]: obj }), {}),
   );
