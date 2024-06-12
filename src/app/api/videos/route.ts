@@ -8,12 +8,13 @@ import {
 } from "ytdl-core";
 import { checkPrams } from "@/app/api/videos/query.schema";
 import { ZodError } from "zod";
+import { getContentLength } from "@/helpers/content-length.helper";
 
 interface NextApiResponse extends NextResponse {
   params: { videoName: string };
 }
 
-const getHeader = (
+const getHeader = async (
   { headers }: Response,
   format: videoFormat,
   info: videoInfo,
@@ -23,6 +24,13 @@ const getHeader = (
   const responseHeaders = new Headers(headers);
 
   responseHeaders.set("Content-Type", format.mimeType || "video/mp4");
+
+  if (!format.contentLength) {
+    const contentLength = await getContentLength(format.url);
+    if (contentLength) {
+      responseHeaders.set("Content-Length", String(contentLength));
+    }
+  }
 
   if (format.contentLength) {
     responseHeaders.set("Content-Length", format.contentLength);
@@ -50,7 +58,7 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const data = downloadFromInfo(info, { format, highWaterMark: 1024 * 1024 });
 
     return new Response(data as never, {
-      headers: getHeader(response, format, info),
+      headers: await getHeader(response, format, info),
     });
   } catch (error) {
     if (error instanceof ZodError) {
