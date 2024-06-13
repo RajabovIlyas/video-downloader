@@ -49,6 +49,16 @@ const getVideoInfo = async (id: string): Promise<ResponseVideoInfoModel> => {
   ).data;
 };
 
+const convertedFormat = async (
+  format: ResponseVideoFormatModel,
+  videoId: string,
+) => ({
+  ...objectDivision(format, FORMAT_PROPERTIES),
+  contentLength: await getSizeFile(format.url, format.contentLength),
+  type: format.mimeType?.startsWith("audio") ? TypeTags.audio : TypeTags.video,
+  url: getUrlDownload(videoId, format.itag),
+});
+
 export const videoInfoById = async (
   videoId: string,
 ): Promise<VideoInfoModel> => {
@@ -57,18 +67,13 @@ export const videoInfoById = async (
     videoDetails,
   } = await getVideoInfo(videoId);
 
-  const unitedFormat = [...adaptiveFormats, ...formats];
-
-  const videoFormat = await Promise.all(
-    unitedFormat.map(async (format) => ({
-      ...objectDivision(format, FORMAT_PROPERTIES),
-      contentLength: await getSizeFile(format.url, format.contentLength),
-      type: format.mimeType?.startsWith("audio")
-        ? TypeTags.audio
-        : TypeTags.video,
-      url: getUrlDownload(videoId, format.itag),
+  const videoFormat = await Promise.all([
+    ...formats.map(async (format) => ({
+      ...(await convertedFormat(format, videoId)),
+      type: TypeTags.videoFull,
     })),
-  );
+    ...adaptiveFormats.map((format) => convertedFormat(format, videoId)),
+  ]);
 
   return {
     formats: videoFormat,
