@@ -5,27 +5,19 @@ import DownloadIcon from "@/components/icons/DownloadIcon";
 import { VideoFormat, VideoInfoModel } from "@/models/video-info.model";
 import { ErrorReqModel } from "@/models/error-req.model";
 import FormatListLoader from "@/components/FormatList/FormatListLoader";
+import TypeBadge from "@/components/TypeBadge";
 
-interface FormatItemProps extends Omit<VideoFormat, "url"> {
+interface FormatItemProps extends VideoFormat {
   videoKey: string;
   title: string;
 }
 
-const getUrlDownload = (videoKey: string, itag: number) => {
-  if (!videoKey || !itag) {
-    return "";
-  }
-  return `/api/videos?id=${videoKey}&quality=${itag}`;
-};
-
 function FormatItem({
-  itag,
   qualityLabel,
-  videoKey,
+  url,
   title,
-  fps,
+  type,
   contentLength,
-  container,
 }: FormatItemProps) {
   return (
     <tr className="hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -33,17 +25,17 @@ function FormatItem({
         {title}
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-500 whitespace-nowrap dark:text-white">
-        {qualityLabel} {container}
+        {qualityLabel}
       </td>
       <td className="hidden sm:block py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
-        {fps}
+        <TypeBadge tag={type} />
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
         {contentLength}
       </td>
       <td className="py-4 px-6 text-sm font-medium text-right whitespace-nowrap">
         <a
-          href={getUrlDownload(videoKey, itag)}
+          href={url}
           className="text-blue-600 dark:text-blue-500 hover:underline flex gap-1"
         >
           <DownloadIcon className="fill-blue-600 dark:fill-blue-500" />
@@ -92,7 +84,7 @@ function FormatList() {
                       scope="col"
                       className="hidden sm:block py-3 px-6 text-xs font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400"
                     >
-                      fps
+                      type
                     </th>
                     <th
                       scope="col"
@@ -108,7 +100,7 @@ function FormatList() {
                 <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700 ">
                   {formats.map((format) => (
                     <FormatItem
-                      key={format.itag}
+                      key={format.url}
                       {...{ ...format, title, videoKey }}
                     />
                   ))}

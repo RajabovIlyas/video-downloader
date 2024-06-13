@@ -1,11 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
 import { chooseFormat, getInfo, videoFormat, videoInfo } from "ytdl-core";
-import { checkPrams } from "@/app/api/videos/query.schema";
 import { ZodError } from "zod";
 import {
   retrieveChallenge,
   solveChallenge,
 } from "@/services/faster-download.service";
+import { checkPrams } from "@/app/api/v2/videos/query.schema";
 
 interface NextApiResponse extends NextResponse {
   params: { videoName: string };
