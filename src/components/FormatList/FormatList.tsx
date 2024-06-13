@@ -28,7 +28,7 @@ function FormatItem({
         {qualityLabel}
       </td>
       <td className="hidden sm:block py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
-        <TypeBadge tag={type} />
+        <TypeBadge type={type} />
       </td>
       <td className="py-4 px-6 text-sm font-medium text-gray-900 whitespace-nowrap dark:text-white ">
         {contentLength}
