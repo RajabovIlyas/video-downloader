@@ -6,7 +6,7 @@ import {
   videoFormat,
   videoInfo,
 } from "ytdl-core";
-import { checkPrams } from "@/app/api/videos/query.schema";
+import { checkVideoPrams } from "@/app/api/videos/query-videos.schema";
 import { ZodError } from "zod";
 import { getContentLength } from "@/helpers/content-length.helper";
 
@@ -50,7 +50,7 @@ const getHeader = async (
 
 export async function GET(request: NextRequest, response: NextApiResponse) {
   try {
-    const { id, quality } = checkPrams(request.url);
+    const { id, quality } = checkVideoPrams(request.url);
 
     const info = await getInfo(id);
     const format = chooseFormat(info.formats, { quality });

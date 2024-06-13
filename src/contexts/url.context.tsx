@@ -47,7 +47,6 @@ export default function UrlContextComponent({
       setVideoKey(newVideoKey);
 
       const videoInfo = await videoInfoById(newVideoKey);
-      console.log("videoInfo", videoInfo);
       setVideoInfo(videoInfo);
     } catch (e) {
       setVideoInfo({ error: "Bad request!" });
