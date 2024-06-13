@@ -4,8 +4,6 @@ import { VideoInfoModel } from "@/models/video-info.model";
 import { getBiteToMegaBite } from "@/helpers/bite-to-megabite.helper";
 import { getContentLength } from "@/helpers/content-length.helper";
 import { TypeTags } from "@/enums/type-tags.enum";
-import axios from "axios";
-import { ResponseVideoInfoModel } from "@/models/response-video-info.model";
 import { getInfo, videoFormat } from "ytdl-core";
 
 const FORMAT_PROPERTIES: Array<keyof videoFormat> = [

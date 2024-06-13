@@ -7,7 +7,7 @@ export const getContentLength = async (
     if (!url) {
       return;
     }
-    const res = await axios.get(url);
+    const res = await axios.head(url);
     const contentLength = res.headers["content-length"];
     if (!contentLength) {
       return;
