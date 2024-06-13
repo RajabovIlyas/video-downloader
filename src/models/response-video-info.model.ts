@@ -1,6 +1,6 @@
 export interface ResponseVideoFormatModel {
   itag: number;
-  url: string;
+  url?: string;
   mimeType: string;
   bitrate: number;
   width: number;

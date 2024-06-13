@@ -1,8 +1,8 @@
 import { TypeTags } from "@/enums/type-tags.enum";
-import { ResponseVideoFormatModel } from "@/models/response-video-info.model";
+import { videoFormat } from "ytdl-core";
 
 export type VideoFormat = Pick<
-  ResponseVideoFormatModel,
+  videoFormat,
   "quality" | "qualityLabel" | "contentLength" | "url"
 > & { type: TypeTags; url: string };
 
