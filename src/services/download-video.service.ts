@@ -5,12 +5,10 @@ import { getBiteToMegaBite } from "@/helpers/bite-to-megabite.helper";
 import { getContentLength } from "@/helpers/content-length.helper";
 import { TypeTags } from "@/enums/type-tags.enum";
 import axios from "axios";
-import {
-  ResponseVideoFormatModel,
-  ResponseVideoInfoModel,
-} from "@/models/response-video-info.model";
+import { ResponseVideoInfoModel } from "@/models/response-video-info.model";
+import { getInfo, videoFormat } from "ytdl-core";
 
-const FORMAT_PROPERTIES: Array<keyof ResponseVideoFormatModel> = [
+const FORMAT_PROPERTIES: Array<keyof videoFormat> = [
   "quality",
   "qualityLabel",
   "url",
@@ -38,42 +36,28 @@ const getUrlDownload = (videoKey: string, itag: number) => {
   return `/api/videos?id=${videoKey}&quality=${itag}`;
 };
 
-const getVideoInfo = async (id: string): Promise<ResponseVideoInfoModel> => {
-  return (
-    await axios.post("https://www.youtube.com/youtubei/v1/player", {
-      videoId: id,
-      context: {
-        client: { clientName: "WEB", clientVersion: "2.20230810.05.00" },
-      },
-    })
-  ).data;
+const getType = (itag: number, mimeType?: string) => {
+  if (itag < 100) {
+    return TypeTags.videoFull;
+  }
+  return mimeType?.startsWith("video") ? TypeTags.video : TypeTags.audio;
 };
 
-const convertedFormat = async (
-  format: ResponseVideoFormatModel,
-  videoId: string,
-) => ({
+const convertedFormat = async (format: videoFormat, videoId: string) => ({
   ...objectDivision(format, FORMAT_PROPERTIES),
   contentLength: await getSizeFile(format.url, format.contentLength),
-  type: format.mimeType?.startsWith("audio") ? TypeTags.audio : TypeTags.video,
+  type: getType(format.itag, format.mimeType),
   url: getUrlDownload(videoId, format.itag),
 });
 
 export const videoInfoById = async (
   videoId: string,
 ): Promise<VideoInfoModel> => {
-  const {
-    streamingData: { adaptiveFormats, formats },
-    videoDetails,
-  } = await getVideoInfo(videoId);
+  const { formats, videoDetails } = await getInfo(videoId);
 
-  const videoFormat = await Promise.all([
-    ...formats.map(async (format) => ({
-      ...(await convertedFormat(format, videoId)),
-      type: TypeTags.videoFull,
-    })),
-    ...adaptiveFormats.map((format) => convertedFormat(format, videoId)),
-  ]);
+  const videoFormat = await Promise.all(
+    formats.map(async (format) => convertedFormat(format, videoId)),
+  );
 
   return {
     formats: videoFormat,
