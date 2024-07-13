@@ -6,6 +6,7 @@ import { VideoInfoModel } from "@/models/video-info.model";
 import { getParamFromUrlYt } from "@/helpers/param-from-url-yt.helper";
 import { ErrorReqModel } from "@/models/error-req.model";
 import { videoInfoById } from "@/services/download-video.service";
+import { getScrappingFormatFromBackEnd } from "@/server/scrapping-format";
 
 type FormatType = VideoInfoModel | null | ErrorReqModel;
 
@@ -46,7 +47,7 @@ export default function UrlContextComponent({
       setInfoLoading(true);
       setVideoKey(newVideoKey);
 
-      const videoInfo = await videoInfoById(newVideoKey);
+      const videoInfo = await getScrappingFormatFromBackEnd(newVideoKey);
       setVideoInfo(videoInfo);
     } catch (e) {
       setVideoInfo({ error: "Bad request!" });
