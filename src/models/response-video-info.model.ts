@@ -27,6 +27,42 @@ export interface ResponseVideoFormatModel {
   averageBitrate?: number;
 }
 
+export interface ResponseCaptionsModel {
+  playerCaptionsTracklistRenderer: {
+    captionTracks: {
+      baseUrl: string;
+      name: {
+        simpleText: string;
+      };
+      vssId: string;
+      languageCode: string;
+      isTranslatable: boolean;
+      trackName: string;
+    }[];
+    audioTracks: {
+      captionTrackIndices: [number, number];
+      defaultCaptionTrackIndex: number;
+      visibility: string;
+      hasDefaultTrack: boolean;
+      captionsInitialState: string;
+    }[];
+    translationLanguages: {
+      languageCode: string;
+      languageName: {
+        simpleText: string;
+      };
+    }[];
+    defaultAudioTrackIndex: number;
+    openTranscriptCommand: {
+      clickTrackingParams: string;
+      changeEngagementPanelVisibilityAction: {
+        targetId: string;
+        visibility: string;
+      };
+    };
+  };
+}
+
 export interface ResponseVideoInfoModel {
   responseContext: {
     visitorData: string;
@@ -123,41 +159,7 @@ export interface ResponseVideoInfoModel {
     videostatsScheduledFlushWalltimeSeconds: number[];
     videostatsDefaultFlushIntervalSeconds: number;
   };
-  captions: {
-    playerCaptionsTracklistRenderer: {
-      captionTracks: {
-        baseUrl: string;
-        name: {
-          simpleText: string;
-        };
-        vssId: string;
-        languageCode: string;
-        isTranslatable: boolean;
-        trackName: string;
-      }[];
-      audioTracks: {
-        captionTrackIndices: [number, number];
-        defaultCaptionTrackIndex: number;
-        visibility: string;
-        hasDefaultTrack: boolean;
-        captionsInitialState: string;
-      }[];
-      translationLanguages: {
-        languageCode: string;
-        languageName: {
-          simpleText: string;
-        };
-      }[];
-      defaultAudioTrackIndex: number;
-      openTranscriptCommand: {
-        clickTrackingParams: string;
-        changeEngagementPanelVisibilityAction: {
-          targetId: string;
-          visibility: string;
-        };
-      };
-    };
-  };
+  captions: ResponseCaptionsModel;
   videoDetails: {
     videoId: string;
     title: string;

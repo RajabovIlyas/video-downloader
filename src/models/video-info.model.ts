@@ -3,8 +3,8 @@ import { videoFormat } from "ytdl-core";
 
 export type VideoFormat = Pick<
   videoFormat,
-  "quality" | "qualityLabel" | "contentLength" | "url"
-> & { type: TypeTags; url: string };
+  "quality" | "contentLength" | "url"
+> & { type: TypeTags; url: string; qualityLabel: string };
 
 export type VideoInfoModel = {
   formats: VideoFormat[];
